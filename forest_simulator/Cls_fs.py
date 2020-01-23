@@ -107,7 +107,7 @@ class ForestMap(object):
         dispersal_proba = 0.5
         if (self.cellmap[location].repro_state() == 1):
         # if(self.cellmap[location].tree.age >= age_maturite):
-            if location != 0 and location != len(self.cellmap):
+            if location != 0 and location < len(self.cellmap)-1:
                 # J'ai reformulé comme ça #leo
                 # proba_right = random.())
                 # proba_left = random.()
@@ -126,7 +126,7 @@ class ForestMap(object):
         """
         lumiere_increment = 0.025
         if grow_condi==1:
-            if location != 0 and location != len(self.cellmap):
+            if location != 0 and location < len(self.cellmap)-1:    
                 self.cellmap[location-1].lumiere += -lumiere_increment
                 self.cellmap[location+1].lumiere += -lumiere_increment
             # print("light event")
