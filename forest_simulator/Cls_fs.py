@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from random import random
+
 class GroundCell(object):
 
     """Une GroundCell possède les attributs:
@@ -106,12 +108,13 @@ class ForestMap(object):
         if (self.cellmap[location].repro_state() == 1):
         # if(self.cellmap[location].tree.age >= age_maturite):
             if location != 0 and location != len(self.cellmap):
-                proba_right = random.uniform(0,1) #rand() fait la mm par default je crois
-                proba_left = random.uniform(0,1) # si tu fais from random import rand
-                if proba_left > dispersal_proba:
+                # J'ai reformulé comme ça #leo
+                # proba_right = random.())
+                # proba_left = random.()
+                if random() > dispersal_proba:
                     self.cellmap[location-1].etat = 1
-                if proba_right > dispersal_proba:
-                self.cellmap[location+1].etat = 1
+                if random() > dispersal_proba:
+                    self.cellmap[location+1].etat = 1
 
 
     def update_light_conditions(self,grow_condi,location):
