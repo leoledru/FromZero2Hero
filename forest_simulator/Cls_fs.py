@@ -3,12 +3,14 @@
 class GroundCell(object):
 
     """Une GroundCell possède les attributs:
-    -
-    -
-    -
-    -
+    - energie
+    - lumiere
+    - etat
+    - location
+    - tree
     et les méthodes:
     - grow_tree
+    - repro state
     """
 
     def __init__(self,coord):
@@ -21,30 +23,38 @@ class GroundCell(object):
 
 
     def grow_tree(self):
-        """ Un tree grandit/meure si les conditions suivantes sont réunies:
+        """ Un tree grandit/meurt si les conditions suivantes sont réunies:
         - son age est inf à l'age max (cas échéant il meurt)
         - de l'énergie est disponible pour sa croissance
+        returns grow_event (0-1), see ForestMap.update_light_conditions
         """
-        age_max = 50
         energ_thresh = 10
-        if self.tree.hauteur<age_max and self.energie>energ_thresh:
+        age_max = 50
+        grow_event = 0
+
+        if self.tree.age<age_max and self.energie>energ_thresh:
             self.tree.hauteur += 1
-            # self.update_light_conditions() # à coder
-
-
-    def update_light_conditions():
-        """
-        update light conditions when a tree grows
-        adj cells
-        dans Forest Map plutôt
-        """
+            self.energie += -1
+            grow_event = 1
+            return grow_event
+        elif self.tree.age == age_max: # die event
+            self.tree = Tree(self.location) # we reset >> reset quoi ?
+            self.etat = 0
 
 
     def repro_state(self):
         """
-        à remplir
+        We consider that a tree reproduces depending on his age,
+        and the available light (discutable)
+        returns a bool that decides if a tree is able to
+        reproduce or not
         """
-        lumiere_thresh = .5
+        age_maturite = 5
+        lumiere_thresh = .25
+        if self.lumiere > lumiere_thresh and self.tree.age >= age_maturite:
+            return 1
+        else:
+            return 0
 
 
 
@@ -89,14 +99,34 @@ class ForestMap(object):
     def dispersion(self,location):
         """ Méthode de dispersion
         Quand méthode appelée,
-        probabilité (à def) que les cellules voisines deviennent occupées
+        probabilité (À FAIRE) que les cellules voisines deviennent occupées
         """
-        age_maturite = 5 ;
-        if(self.cellmap[location].tree.age >= age_maturite):
-            if location != 0 and location != len(self.cellmap):
-                self.cellmap[location-1].etat = 1 # introduire rand ici
-                self.cellmap[location+1].etat = 1 # introduire rand ici
 
+        dispersal_proba = 0.5
+        if (self.cellmap[location].repro_state() == 1):
+        # if(self.cellmap[location].tree.age >= age_maturite):
+            if location != 0 and location != len(self.cellmap):
+                proba_right = random.uniform(0,1) #rand() fait la mm par default je crois
+                proba_left = random.uniform(0,1) # si tu fais from random import rand
+                if proba_left > dispersal_proba:
+                    self.cellmap[location-1].etat = 1
+                if proba_right > dispersal_proba:
+                self.cellmap[location+1].etat = 1
+
+
+    def update_light_conditions(self,grow_condi,location):
+        """
+        update light conditions when a tree grows (grow_condi==1):
+        We consider that if a tree grows,
+        his neighbors will have access to less light while he still has
+        access to as much light as before
+        """
+        lumiere_increment = 0.025
+        if grow_condi==1:
+            if location != 0 and location != len(self.cellmap):
+                self.cellmap[location-1].lumiere += -lumiere_increment
+                self.cellmap[location+1].lumiere += -lumiere_increment
+            # print("light event")
 
 
     def update_Fmap(self):
@@ -104,8 +134,6 @@ class ForestMap(object):
         for i in range(len(self.cellmap)):
             if(self.cellmap[i].etat==1):
                 self.cellmap[i].tree.age += 1
-                self.cellmap[i].grow_tree()
                 # self.cellmap[i].tree.hauteur += 1 # à ajouter
-                # conditions sur voisins ici après
-                # appeler méthode dispersion ici
+                self.update_light_conditions(self.cellmap[i].grow_tree(),i)
                 self.dispersion(i)

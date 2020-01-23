@@ -1,46 +1,44 @@
 #!/usr/bin/env python
 
+# A régler dans Cls
+# Conditions au bord à prendre en compte
+# lumière et énergie values negatives -> do we care ?
 
-# t'es là ?
-# Re, sorry j'suis en pleine invasion de pyrale
+# Leo t'es là ?
+# cette aprem je laiserai ce programme en stand by je passerai sur
+# blender à regarder tes codes et mettre en input mes coord
+# pour faire grandir des arbres :)
 
-# est-ce qu'il a un regain d'énergie pour la GroundCell qqpart ?
-# non pas pour le moment
-# yes ^^
-# oh mollo hein  haha non non mais c pour être sur de comprendre
-# ahah yes, tu peux t'en charger par contre ^^
-# ni de perte d'ailleurs ?
-# j'ai fais un repo sur mon git
-# tu veux que j'update ? tu clones le truc
-# C un autre repo que celui du tuto openclass ?
-# oui mais si t'as cloné FromZero2Hero tu auras, c'est dedans
-# ok je fais ça, deux sec  
-# ok bah oui j'ai juste a pull alors !
-
+# tu peux push un coup le code que je le prenne à jour pour checker comment ça tourne
 
 
 
 from Cls_fs import *
 from random import randint
+import numpy as np
+
 
 # Generate a landscape with n GroundCells
 n = 100
 fmap = ForestMap(n) # 1D for now
 
-# Init : generate a tree at a random location
+# Init : generate an initial tree at a random location
 i_init = randint(0,n-1)
-print(i_init)
+# print(i_init)
 fmap.create_tree(i_init)
 
-for i in range(15):
+
+# Run the forest simulator for tmax time steps
+tmax = 15
+zL=np.zeros(shape(tmax,n)) ; # (time in rows, grid cells in col)
+for i in range(tmax):
     fmap.update_Fmap()
-    # Verif
-    # print('ini {0}, third {1}'.format(fmap.cellmap[i_init].tree.hauteur,
-    # fmap.cellmap[i_init-2].tree.hauteur))
+    # Verifs
+    print('ini {0}, third {1}'.format(fmap.cellmap[i_init].tree.hauteur,
+    fmap.cellmap[i_init-2].tree.hauteur))
+    print('lumiere adj ini {0}'.format(fmap.cellmap[i_init-1].lumiere))
+    # for j in range(n):
+    # zL.(fmap.cellmap[i_init].tree.hauteur)
+    # stocker x,y,z des arbres sur la grid
 
-
-
-
-# for ...
-# fmap.update_Fmap()
-# stocker x,y,z des arbres sur la grid
+print(zL)
