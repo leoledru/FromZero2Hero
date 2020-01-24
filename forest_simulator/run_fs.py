@@ -29,7 +29,7 @@ fmap.create_tree(i_init)
 
 
 # Run the forest simulator for tmax time steps
-tmax = 50
+tmax = 150
 zL=np.zeros(shape=(tmax,n)) ; # (time in rows, grid cells in col)
 for i in range(tmax):
     fmap.update_Fmap()
