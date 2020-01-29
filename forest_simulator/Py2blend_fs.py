@@ -12,7 +12,13 @@ with open('data.csv', newline='') as csvfile:
 x=[]
 for i in range(len(data[0])):
     x.append(i)
-    bpy.ops.mesh.primitive_cube_add(radius=0.25, location=(x[i],0.0,0.0))
+     # set the list of current objects for each new object
+    currobj = bpy.data.objects 
+    #bpy.ops.mesh.primitive_cube_add(radius=0.25, location=(x[i],0.0,0.0))
+    # add tree by sapling tree generation addon
+    bpy.ops.curve.tree_add('INVOKE_DEFAULT',showLeaves=True)
+    # set the initial location
+    currobj[i].location = (x[i]*5,0,0)
 
 # All cubes objects 
 cubes = bpy.data.objects 
@@ -39,8 +45,12 @@ for i in i_range:
     # Update location for that frame.
     # cubes[15].scale = locations[i]
     for j in range(len(x)-1):
-        cubes[j].scale = [1,1,float(data[i][j])]
+        growth = float(data[i][j])/10 
+        # growth in x and y proportional to growth in height
+        cubes[j].scale = [1/2*growth,1/2*growth,growth]
         cubes[j].keyframe_insert(data_path='scale')
+
+
 
 
 
