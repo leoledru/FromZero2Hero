@@ -154,6 +154,7 @@ class ForestMap(object):
         
         dispersal_proba = self.cellmap[location[0]][location[1]].tree.alloc_repro() 
         if (self.cellmap[location[0]][location[1]].repro_state() == 1):
+            # à améliorer 
             if location[0] != 0 and location[1] !=0 and location[0]<len(self.cellmap)-1 and location[1]<len(self.cellmap)-1:
                 if random() < dispersal_proba: # x - 1, y (left) 
                     self.create_tree([location[0]-1,location[1]])
