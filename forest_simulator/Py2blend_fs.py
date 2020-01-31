@@ -30,15 +30,12 @@ for i in range(dim):
         y.append(j)
         coord.append([i,j,compteur])
         currobj = bpy.data.objects 
-<<<<<<< HEAD
         # bpy.ops.mesh.primitive_cube_add(location=(x[i],y[j],0.0))
         # add tree by sapling tree generation addon
-        bpy.ops.curve.tree_add('INVOKE_DEFAULT',showLeaves=True,location=(x[i],y[j],0.0))
-=======
+        # bpy.ops.curve.tree_add('INVOKE_DEFAULT',showLeaves=True,location=(x[i],y[j],0.0))
         #bpy.ops.mesh.primitive_cube_add(location=(x[i],y[j],0.0))
         # add tree by sapling tree generation addon
         bpy.ops.curve.tree_add('INVOKE_DEFAULT',showLeaves=True)
->>>>>>> 034702605cced901519773e565f78993e239d40c
         # set the initial location
         currobj[i*dim+j].location = (x[i]*5,y[j]*5,0)
         compteur += 1 

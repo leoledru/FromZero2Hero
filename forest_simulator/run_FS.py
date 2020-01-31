@@ -20,11 +20,7 @@ from numpy import savetxt
 import pandas as pd 
 
 # Generate a landscape with of (n*n) (Ground)Cells
-<<<<<<< HEAD
 n = 20
-=======
-n = 10
->>>>>>> 034702605cced901519773e565f78993e239d40c
 fmap = ForestMap(n)
 
 # Init : generate an initial tree at a random location
@@ -33,11 +29,7 @@ i_init = [randint(0,n-1), randint(0,n-1)]
 fmap.create_tree(i_init)
 
 # Run the forest simulator for tmax time steps
-<<<<<<< HEAD
-tmax = 150
-=======
 tmax = 500
->>>>>>> 034702605cced901519773e565f78993e239d40c
 a = np.zeros(shape=(n,n,tmax)) ; 
 for i in range(tmax):
     fmap.update_Fmap()
