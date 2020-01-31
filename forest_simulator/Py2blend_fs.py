@@ -30,11 +30,17 @@ for i in range(dim):
         y.append(j)
         coord.append([i,j,compteur])
         currobj = bpy.data.objects 
+<<<<<<< HEAD
         # bpy.ops.mesh.primitive_cube_add(location=(x[i],y[j],0.0))
         # add tree by sapling tree generation addon
         bpy.ops.curve.tree_add('INVOKE_DEFAULT',showLeaves=True,location=(x[i],y[j],0.0))
+=======
+        #bpy.ops.mesh.primitive_cube_add(location=(x[i],y[j],0.0))
+        # add tree by sapling tree generation addon
+        bpy.ops.curve.tree_add('INVOKE_DEFAULT',showLeaves=True)
+>>>>>>> 034702605cced901519773e565f78993e239d40c
         # set the initial location
-        # currobj[i][j].location = (x[i]*5,y[j]*5,0)
+        currobj[i*dim+j].location = (x[i]*5,y[j]*5,0)
         compteur += 1 
 
 
@@ -50,7 +56,8 @@ frame_start = scene.frame_start
 frame_end = scene.frame_end
 #
 # Loop through locations list.
-loc_len = int((len(data)-1)/(dim*dim))  
+#loc_len = int((len(data)-1)/(dim*dim))    
+loc_len = int((len(data)-1)/(dim*dim)) 
 i_to_percent = 1.0 / (loc_len - 1)
 i_range = range(0, loc_len, 1)
 for i in i_range:
@@ -58,12 +65,12 @@ for i in i_range:
     i_percent = i * i_to_percent
     key_frame = int(frame_start * (1.0 - i_percent) + frame_end * i_percent)
     scene.frame_set(key_frame)
-    # Update location for that frame.
+    # Update location for that frame. 
     # cubes[15].scale = locations[i]
     for j in range(dim*dim):
         growth = float(data[(dim*dim*i)+j+1][3])/10 #
         # growth in x and y proportional to growth in height
-        cubes[j].scale = [1/2*growth,1/2*growth,growth]
+        cubes[j].scale = [1/5*growth,1/5*growth,growth]
         cubes[j].keyframe_insert(data_path='scale')
 
 
