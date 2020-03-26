@@ -20,7 +20,7 @@ from numpy import savetxt
 import pandas as pd 
 
 # Generate a landscape with of (n*n) (Ground)Cells
-n = 20
+n = 10
 fmap = ForestMap(n)
 
 # Init : generate an initial tree at a random location
@@ -30,18 +30,25 @@ fmap.create_tree(i_init)
 
 # Run the forest simulator for tmax time steps
 tmax = 500
-a = np.zeros(shape=(n,n,tmax)) ; 
+a = np.zeros(shape=(n,n,tmax)) ;
+b = np.zeros(shape=(n,n,tmax)) ;
 for i in range(tmax):
     fmap.update_Fmap()
     for j in range(n):
         for k in range(n):
             a[j,k,i] = fmap.cellmap[j][k].tree.hauteur
-             
+            b[j,k,i] = fmap.cellmap[j][k].energie
 
 stacked = pd.Panel(a.swapaxes(1,2)).to_frame().stack().reset_index()
 stacked.columns = ['x', 'y', 'z', 'height']
+
+stacked_b = pd.Panel(b.swapaxes(1,2)).to_frame().stack().reset_index()
+stacked_b.columns = ['time', 'x', 'y', 'energy']
+
 # save to disk
 stacked.to_csv('data_2D.csv', index=False)
+stacked_b.to_csv('energie.csv', index=False)
+
 
 # Then, to load as a list for blender (numpy issue), do 
 # (import csv) 

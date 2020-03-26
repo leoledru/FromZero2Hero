@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding: utf-8
 
 
@@ -11,6 +11,7 @@
 # et si un mix d'esp différente peut être envisagé 
 
 from random import random
+from random import randrange
 from fonctions import sig_func
 import numpy as np 
 
@@ -49,7 +50,7 @@ class GroundCell(object):
         Also update the hauteur attribut (height) of the three, with a factor which
         depends on his age, and hence to the percentage of the energy allocated to the growth 
         """
-        energ_thresh = 10
+        energ_thresh = 10 
         age_max = 150 # faire dépendre de l'esp après
         
         grow_event = 0
@@ -60,9 +61,17 @@ class GroundCell(object):
             return grow_event
         elif self.tree.age == age_max: # Die event
             self.tree = Tree(self.location) # we reset (see Tree default att) 
-            self.energie = 100 # en pratique on voudrait que ce soit un processus continu -> recyclage project, LÉO DEV PART 
+            self.energie = energ_thresh # groundcell is depleted, need time to recover via energy_cycle 
             self.lumiere = 1 
             self.etat = 0
+
+
+    def energie_cycle(self):
+        """ lorsqu'une goundcell est innocupée elle gagne +1 d'énergie par pas de temps
+        """
+        # possibilité à l'avenir de faire dépendre la vitesse de regain d'énergie de l'espèce d'arbre qui était présente, des autres arbres autour ...
+        if self.energie<100:
+            self.energie += 5
 
 
     def repro_state(self):
@@ -78,8 +87,6 @@ class GroundCell(object):
             return 1
         else:
             return 0
-
-
 
 
 class Tree(object):
@@ -157,29 +164,39 @@ class ForestMap(object):
         dispersal_proba = self.cellmap[location[0]][location[1]].tree.alloc_repro() 
         if (self.cellmap[location[0]][location[1]].repro_state() == 1):
             # à améliorer 
+#           if location[0] != 0 and location[1] !=0 and location[0]<len(self.cellmap)-1 and location[1]<len(self.cellmap)-1:
+#                if random() < dispersal_proba: # x - 1, y (left) 
+#                    self.create_tree([location[0]-1,location[1]])
+#                if random() < dispersal_proba: # x + 1, y (right) 
+#                    self.create_tree([location[0]+1,location[1]])
+#                if random() < dispersal_proba: # x, y - 1(down) 
+#                    self.create_tree([location[0],location[1]-1])
+#                if random() < dispersal_proba: # x, y + 1 (up) 
+#                    self.create_tree([location[0],location[1]+1])
+
             if location[0] != 0 and location[1] !=0 and location[0]<len(self.cellmap)-1 and location[1]<len(self.cellmap)-1:
-                if random() < dispersal_proba: # x - 1, y (left) 
-                    self.create_tree([location[0]-1,location[1]])
-                if random() < dispersal_proba: # x + 1, y (right) 
-                    self.create_tree([location[0]+1,location[1]])
-                if random() < dispersal_proba: # x, y - 1(down) 
-                    self.create_tree([location[0],location[1]-1])
-                if random() < dispersal_proba: # x, y + 1 (up) 
-                    self.create_tree([location[0],location[1]+1])
-
-
+                if random() < dispersal_proba:
+                    rand_location = randrange(4) 
+                    if rand_location==0: # x - 1, y (left)
+                        self.create_tree([location[0]-1,location[1]])
+                    if rand_location==1: # x + 1, y (right) 
+                        self.create_tree([location[0]+1,location[1]])
+                    if rand_location==2: # x, y - 1(down) 
+                        self.create_tree([location[0],location[1]-1])
+                    if rand_location==3: # x, y + 1 (up) 
+                        self.create_tree([location[0],location[1]+1])
 
 
     def update_light_conditions(self,grow_condi,location):
         """
-        Update light conditions when a tree grows (grow_condi==1):
-        We consider that if a tree grows,
+        update light conditions when a tree grows (grow_condi==1):
+        we consider that if a tree grows,
         his neighbors will have access to less light while he still has
         access to as much light as before
-        We also consider a minimal quantity of light (a forest is never in the complete dark
-        Some tree species would be more tolerant to darkness than others
-        Args: 
-        - grow_condi -> bool, see GroundCell.grow_tree() 
+        we also consider a minimal quantity of light (a forest is never in the complete dark
+        some tree species would be more tolerant to darkness than others
+        args: 
+        - grow_condi -> bool, see groundcell.grow_tree() 
         - location [x,y] 
         """
         
@@ -202,6 +219,7 @@ class ForestMap(object):
                 self.cellmap[location[0]][location[1]+1].lumiere = max(self.cellmap[location[0]][location[1]].lumiere,lumiere_min)
 
 
+
                
     def update_Fmap(self):
         """ Update de la forest map"""
@@ -211,3 +229,6 @@ class ForestMap(object):
                     self.cellmap[i][j].tree.age += 1
                     self.update_light_conditions(self.cellmap[i][j].grow_tree(),[i,j])
                     self.dispersion([i,j])
+                if(self.cellmap[i][j].etat==0):
+                    self.cellmap[i][j].energie_cycle
+                
